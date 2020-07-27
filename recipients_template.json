@@ -1,0 +1,6 @@
+{
+    "NAME": {
+        "email_address": "email",
+        "counties": ["COUNTY_0, STATE", "COUNTY_1, STATE"]
+    }
+}
