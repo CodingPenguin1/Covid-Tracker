@@ -15,6 +15,7 @@ class County:
         self.confirmed = []
         self.deaths = []
         self.recovered = []
+        self.new_per_day = []
 
         self.update_data()
 
@@ -63,6 +64,11 @@ class County:
             self.deaths.append(date[3])
             self.recovered.append(date[4])
 
+        # Create new cases per day list
+        self.new_per_day = [0]
+        for i in range(1, len(self.active)):
+            self.new_per_day.append(self.active[i] - self.active[i - 1])
+
     def load_csv(self):
         filename = f'data/{self.name.lower()}.csv'
         if path.exists(filename):
@@ -80,9 +86,3 @@ class County:
         with open(filename, 'w') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
-
-
-if __name__ == '__main__':
-    greene = County('greene')
-    for i in range(len(greene.dates)):
-        print(greene.dates[i], greene.active[i], greene.confirmed[i], greene.deaths[i], greene.recovered[i])
