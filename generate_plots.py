@@ -6,18 +6,12 @@ from County import County
 def _get_datasets(county, dataset_names):
     datasets = []
     dataset_labels = []
-    if 'active' in dataset_names:
-        datasets.append(county.active)
-        dataset_labels.append('Active Cases')
-    if 'confirmed' in dataset_names:
-        datasets.append(county.confirmed)
-        dataset_labels.append('Confirmed Cases')
+    if 'cases' in dataset_names:
+        datasets.append(county.cases)
+        dataset_labels.append('Cases')
     if 'deaths' in dataset_names:
         datasets.append(county.deaths)
         dataset_labels.append('Deaths')
-    if 'recovered' in dataset_names:
-        datasets.append(county.recovered)
-        dataset_labels.append('Recoveries')
     if 'new' in dataset_names:
         datasets.append(county.new_per_day)
         dataset_labels.append('New Cases')
