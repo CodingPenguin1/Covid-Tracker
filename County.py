@@ -1,88 +1,54 @@
 import csv
 import json
-from os import path, mkdir
+from os import mkdir, path
 
-import requests
 from bs4 import BeautifulSoup
+
+from update_database import *
 
 
 class County:
-    def __init__(self, name):
+    def __init__(self, name, state):
         self.name = name
+        self.state = state
 
         self.dates = []
-        self.active = []
-        self.confirmed = []
+        self.cases = []
         self.deaths = []
-        self.recovered = []
         self.new_per_day = []
 
         self.update_data()
 
     def update_data(self):
-        # Get webpage content
-        website = requests.get(f'https://www.covidtrackers.com/usa/ohio/{self.name.lower()}-county/')
-        website_html = website.text
-
-        # Initialize parser
-        soup = BeautifulSoup(website_html, 'html.parser')
-
-        # Parse out data
-        data_json = soup.find('canvas', {'class': 'covid-case-line-chart'}).attrs['data-json']
-        data_json = json.loads(data_json)
-
-        days = data_json['day']
-        active = data_json['open']
-        confirmed = data_json['confirmed']
-        deaths = data_json['deaths']
-        recovered = data_json['recovered']
-
-        # Load data in to list for easy parsing
-        data = []
-        for i in range(len(days)):
-            data.append((days[i], active[i], confirmed[i], deaths[i], recovered[i]))
-        data.reverse()
-
         # Load data from CSV
         csv_data = self.load_csv()
 
-        # Write new data to CSV
-        known_dates = []
-        for day in csv_data:
-            known_dates.append(day[0])
-
-        for day in data:
-            if day[0] not in known_dates:
-                csv_data.append(day)
-        self.write_csv(csv_data)
-
-        # Copy data to object properties
-        for date in data:
+        for date in csv_data:
             self.dates.append(date[0])
-            self.active.append(date[1])
-            self.confirmed.append(date[2])
-            self.deaths.append(date[3])
-            self.recovered.append(date[4])
+            self.cases.append(int(date[4]))
+            self.deaths.append(int(date[5]))
 
         # Create new cases per day list
         self.new_per_day = [0]
-        for i in range(1, len(self.active)):
-            self.new_per_day.append(self.active[i] - self.active[i - 1])
+        for i in range(1, len(self.cases)):
+            self.new_per_day.append(self.cases[i] - self.cases[i - 1])
 
     def load_csv(self):
-        filename = f'data/{self.name.lower()}.csv'
-        if path.exists(filename):
-            with open(filename, 'r') as f:
-                csv_data = csv.reader(f)
-                csv_data = [_ for _ in csv_data]
-                # csv_data.reverse()
-                return csv_data
-        return []
+        filename = 'data.csv'
+        if not path.exists(filename):
+            update_database()
 
-    def write_csv(self, data):
-        filename = f'data/{self.name.lower()}.csv'
-        if not path.exists('data'):
-            mkdir('data')
-        with open(filename, 'w') as csvfile:
-            csvwriter = csv.writer(csvfile)
-            csvwriter.writerows(data)
+        with open(filename, 'r') as f:
+            csv_data = csv.reader(f)
+
+            county_data = []
+            for line in csv_data:
+                if self.name.lower() == line[1].lower() and self.state.lower() == line[2].lower():
+                    county_data.append(line)
+            return county_data
+
+
+if __name__ == '__main__':
+    c = County('greene', 'ohio')
+    for i in range(len(c.dates)):
+        print(c.dates[i], c.cases[i], c.new_per_day[i], c.deaths[i])
