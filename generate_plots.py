@@ -32,7 +32,7 @@ def generate_plot(county, datasets):
     for i in range(len(datasets)):
         ax1.scatter(dates, datasets[i], s=10, c=colors[i], label=dataset_labels[i])
 
-    plt.xticks([dates[i] for i in range(0, len(dates) + 1, len(dates) // 4)])
+    plt.xticks([dates[i] for i in range(0, len(dates), len(dates) // 4)])
     plt.legend(loc='upper left')
     plt.title(county.name.capitalize() + ' County')
 

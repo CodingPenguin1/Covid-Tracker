@@ -72,5 +72,6 @@ if __name__ == '__main__':
             part['Content-Disposition'] = 'attachment; filename="%s' % basename(path)
             msg.attach(part)
         server.sendmail(gmail_user, recipients[recipient]['email_address'], msg.as_string())
+        print(f'Sent mail to {recipient}')
 
     server.close()
