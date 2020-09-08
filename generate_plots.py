@@ -30,7 +30,7 @@ def generate_plot(county, datasets):
 
     # Iterate through different datasets
     for i in range(len(datasets)):
-        ax1.scatter(dates, datasets[i], s=10, c=colors[i], label=dataset_labels[i])
+        ax1.plot(dates, datasets[i], c=colors[i], label=dataset_labels[i], linestyle='-')
 
     plt.xticks([dates[i] for i in range(0, len(dates), len(dates) // 4)])
     plt.legend(loc='upper left')
