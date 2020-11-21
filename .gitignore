@@ -5,3 +5,4 @@ recipients.json
 .ipynb_checkpoints/*.*
 data.csv
 *.csv
+data.csv
