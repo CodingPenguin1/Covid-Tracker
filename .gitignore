@@ -2,3 +2,7 @@ __pycache__/
 images/
 credentials.json
 recipients.json
+.ipynb_checkpoints/*.*
+data.csv
+*.csv
+data.csv

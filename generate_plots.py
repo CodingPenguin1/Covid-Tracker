@@ -2,6 +2,8 @@ from os import mkdir, path
 
 from matplotlib import pyplot as plt
 
+import numpy as np
+
 from County import County
 
 
@@ -30,10 +32,18 @@ def generate_plot(county, datasets):
 
     # Iterate through different datasets
     for i in range(len(datasets)):
-        ax1.plot(dates, datasets[i], c=colors[i], label=dataset_labels[i], linestyle='-')
+        data = np.array(datasets[i])
+        datanew = np.zeros_like(data)
+        if dataset_labels[i] == 'New Cases':
+            for j, val in enumerate(data):
+                datanew[j] = np.sum(data[(j-14):j])
+                dataset_labels[i] = 'Active Cases'
+            data = datanew
+            ax1.plot(dates, data, c=colors[i], label=dataset_labels[i], linestyle='-')
 
     plt.xticks([dates[i] for i in range(0, len(dates), len(dates) // 4)])
     plt.legend(loc='upper left')
+    plt.grid(True)
     plt.title(county.name.capitalize() + ' County')
 
     if not path.exists('images'):
